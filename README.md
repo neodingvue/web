@@ -270,7 +270,7 @@ function updateProductStock() {
 
 ## 项目截图
 
-*[此处可添加系统界面截图]*
+
 
 ## 开发团队
 
