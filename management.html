@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品管理系统</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --light: #f5f7fa;
+            --gray: #95a5a6;
+            --border: #eaeaea;
+            --dark: #1a2530;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 90vh;
+            position: relative;
+        }
+        
+        /* 登录界面样式 */
+        .login-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            text-align: center;
+            transform: translateY(0);
+            transition: all 0.5s ease;
+        }
+        
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .login-logo {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .login-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .login-subtitle {
+            color: var(--gray);
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-content {
+            flex: 1;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+        
+        .subtitle {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+        
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .content {
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .delete-btn {
+            background: var(--danger);
+        }
+        
+        .update-btn {
+            background: var(--warning);
+        }
+        
+        .withdraw-btn {
+            background: #9b59b6;
+        }
+        
+        .products-container {
+            margin-top: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .product-info {
+            flex: 1;
+            min-width: 240px;
+        }
+        
+        .product-actions {
+            flex: 0 0 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: var(--primary);
+        }
+        
+        .product-price {
+            color: var(--danger);
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+        }
+        
+        .product-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .product-description {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f1f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px solid #ddeeff;
+        }
+        
+        .stat-item {
+            padding: 5px 15px;
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+            border: 1px dashed #ddd;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .notification {
+            background: var(--success);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            text-align: center;
+            display: none;
+            font-size: 0.95rem;
+            animation: fadeIn 0.3s;
+        }
+        
+        .notification.error {
+            background: var(--danger);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .team-section {
+            text-align: center;
+            padding: 12px;
+            font-size: 0.9rem;
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+            background: #fafafa;
+        }
+        
+        .team-title {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .team-members {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .member {
+            font-size: 0.9rem;
+            position: relative;
+            padding: 0 5px;
+        }
+        
+        .member:after {
+            content: "•";
+            position: absolute;
+            right: -12px;
+            top: 0;
+            color: #ccc;
+        }
+        
+        .member:last-child:after {
+            display: none;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            background: none;
+            border: none;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+        
+        /* 标签页样式 */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--secondary);
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* 调出记录表格 */
+        .withdrawals-section {
+            margin-top: 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .withdrawals-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        .withdrawals-table th {
+            background-color: #f1f8ff;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+            color: var(--primary);
+        }
+        
+        .withdrawals-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .withdrawals-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .product-card {
+                flex-direction: column;
+            }
+            
+            .product-actions {
+                flex-direction: row;
+                margin-top: 15px;
+                flex: 0 0 auto;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .team-members {
+                flex-direction: row;
+                gap: 10px;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .logout-btn {
+                margin-top: 15px;
+                align-self: flex-end;
+            }
+            
+            .withdrawals-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .form-section {
+                padding: 15px;
+            }
+            
+            .team-members {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .member:after {
+                display: none;
+            }
+            
+            .login-card {
+                padding: 25px;
+            }
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div class="login-container">
+        <div class="login-card" id="login-card">
+            <div class="login-logo">🛒</div>
+            <h2 class="login-title">商品管理系统</h2>
+            <div class="login-subtitle">请输入您的账号信息登录系统</div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" placeholder="输入用户名" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" placeholder="输入密码" required>
+                </div>
+                
+                <button type="submit" id="login-btn" class="btn-block">登录系统</button>
+            </form>
+            
+            <div class="notification" id="login-notification"></div>
+        </div>
+    </div>
+    
+    <!-- 主应用内容 -->
+    <div class="container hidden" id="app-container">
+        <header>
+            <div class="header-content">
+                <h1>商品管理系统</h1>
+                <div class="subtitle">高效管理您的商品库存与信息</div>
+            </div>
+            <button class="logout-btn" id="logout-btn">退出系统</button>
+        </header>
+        
+        <div class="content">
+            <div class="tabs">
+                <div class="tab active" data-tab="inventory">库存管理</div>
+                <div class="tab" data-tab="withdrawals">调出记录</div>
+            </div>
+            
+            <div class="tab-content active" id="inventory-tab">
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-products">0</div>
+                        <div class="stat-label">商品总数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-value">¥0</div>
+                        <div class="stat-label">库存总值</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-stock">0</div>
+                        <div class="stat-label">库存总量</div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">商品名称 *</label>
+                            <input type="text" id="name" placeholder="输入商品名称">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">价格 (¥) *</label>
+                            <input type="number" id="price" placeholder="输入价格" min="0" step="0.01">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quantity">库存数量 *</label>
+                            <input type="number" id="quantity" placeholder="输入库存数量" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="category">商品类别 *</label>
+                            <select id="category">
+                                <option value="">选择类别</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">商品描述</label>
+                        <textarea id="description" rows="3" placeholder="输入商品描述"></textarea>
+                    </div>
+                    
+                    <button id="add-btn" class="btn-block">添加商品</button>
+                    <div class="notification" id="notification"></div>
+                </div>
+                
+                <div class="products-container" id="products-container">
+                    <!-- 商品列表将在这里显示 -->
+                </div>
+            </div>
+            
+            <div class="tab-content" id="withdrawals-tab">
+                <div class="withdrawals-section">
+                    <h3 class="section-title">调出记录</h3>
+                    <table class="withdrawals-table">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>商品名称</th>
+                                <th>调出数量</th>
+                                <th>原因</th>
+                                <th>操作人</th>
+                            </tr>
+                        </thead>
+                        <tbody id="withdrawals-body">
+                            <!-- 调出记录将在这里显示 -->
+                        </tbody>
+                    </table>
+                    <div class="empty-state" id="empty-withdrawals" style="display:none;">
+                        <h3>暂无调出记录</h3>
+                        <p>尚未有商品调出记录</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="team-section">
+            <div class="team-title">开发小组</div>
+            <div class="team-members">
+                <div class="member">王天宇</div>
+                <div class="member">王玎</div>
+                <div class="member">夏博文</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 修改库存模态框 -->
+    <div class="modal" id="update-modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <div class="modal-header">
+                <h3 class="modal-title">修改库存</h3>
+            </div>
+            <div class="form-group">
+                <label for="update-name">商品名称</label>
+                <input type="text" id="update-name" disabled>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="update-quantity">库存数量</label>
+                    <input type="number" id="update-quantity" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="update-reason">修改原因</label>
+                    <input type="text" id="update-reason" placeholder="输入修改原因">
+                </div>
+            </div>
+            <button id="update-submit" class="btn-block">确认修改</button>
+        </div>
+    </div>
+    
+    <!-- 调出商品模态框 -->
+    <div class="modal" id="withdraw-modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <div class="modal-header">
+                <h3 class="modal-title">商品调出</h3>
+            </div>
+            <div class="form-group">
+                <label for="withdraw-name">商品名称</label>
+                <input type="text" id="withdraw-name" disabled>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="withdraw-quantity">调出数量</label>
+                    <input type="number" id="withdraw-quantity" min="1" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="withdraw-reason">调出原因</label>
+                    <select id="withdraw-reason">
+                        <option value="销售">销售</option>
+                        <option value="样品">样品</option>
+                        <option value="损坏">损坏</option>
+                        <option value="过期">过期</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="withdraw-notes">备注</label>
+                <textarea id="withdraw-notes" rows="2" placeholder="输入备注信息"></textarea>
+            </div>
+            <button id="withdraw-submit" class="btn-block">确认调出</button>
+        </div>
+    </div>
+
+    <script>
+        // 模拟用户数据
+        const users = [
+            { username: "admin", password: "admin123", name: "系统管理员" },
+            { username: "manager", password: "manager123", name: "王经理" },
+            { username: "staff", password: "staff123", name: "普通员工" }
+        ];
+        
+        // 使用树形结构表示商品类别
+        const categories = {
+            "electronics": {
+                name: "电子产品",
+                subcategories: {
+                    "phones": "手机",
+                    "laptops": "笔记本电脑",
+                    "accessories": "配件"
+                }
+            },
+            "clothing": {
+                name: "服装",
+                subcategories: {
+                    "men": "男装",
+                    "women": "女装",
+                    "children": "童装"
+                }
+            },
+            "books": {
+                name: "图书",
+                subcategories: {
+                    "fiction": "小说",
+                    "nonfiction": "非虚构",
+                    "academic": "学术书籍"
+                }
+            },
+            "home": {
+                name: "家居用品",
+                subcategories: {
+                    "furniture": "家具",
+                    "kitchen": "厨房用品",
+                    "decor": "装饰"
+                }
+            },
+            "food": {
+                name: "食品饮料",
+                subcategories: {
+                    "snacks": "零食",
+                    "beverages": "饮料",
+                    "fresh": "生鲜食品"
+                }
+            },
+            "medicine": {
+                name: "药品",
+                subcategories: {
+                    "otc": "非处方药",
+                    "prescription": "处方药",
+                    "health": "保健品"
+                }
+            },
+            "other": {
+                name: "其他",
+                subcategories: {}
+            }
+        };
+
+        // DOM元素
+        const loginContainer = document.querySelector('.login-container');
+        const loginCard = document.getElementById('login-card');
+        const loginForm = document.getElementById('login-form');
+        const loginNotification = document.getElementById('login-notification');
+        const appContainer = document.getElementById('app-container');
+        const logoutBtn = document.getElementById('logout-btn');
+        
+        // 商品数据
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+        
+        // 调出记录数据
+        let withdrawals = JSON.parse(localStorage.getItem('withdrawals')) || [];
+        
+        // 当前选中的商品（用于修改/调出操作）
+        let currentProduct = null;
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 检查用户是否已登录
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                loginContainer.classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                initInventorySystem();
+            } else {
+                initLoginScreen();
+            }
+        });
+        
+        // 初始化登录界面
+        function initLoginScreen() {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                
+                // 验证用户
+                const user = users.find(u => u.username === username && u.password === password);
+                
+                if (user) {
+                    // 登录成功
+                    showLoginNotification(`欢迎回来，${user.name}`, 'success');
+                    loginForm.reset();
+                    
+                    // 显示加载动画
+                    loginCard.innerHTML = `
+                        <div style="text-align:center; padding:50px;">
+                            <div style="margin:auto; width:40px;height:40px;border-radius:50%;border:3px solid #3498db;border-top-color:transparent;animation:spin 1s linear infinite;"></div>
+                            <p style="margin-top:20px;color:#2c3e50;">登录中...</p>
+                            <style>@keyframes spin {to{transform:rotate(360deg);}}</style>
+                        </div>
+                    `;
+                    
+                    setTimeout(() => {
+                        // 保存登录状态
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('currentUser', JSON.stringify(user));
+                        
+                        // 隐藏登录界面，显示主应用
+                        loginContainer.classList.add('hidden');
+                        appContainer.classList.remove('hidden');
+                        
+                        // 初始化库存系统
+                        initInventorySystem();
+                    }, 1500);
+                } else {
+                    // 登录失败
+                    showLoginNotification('用户名或密码错误', 'error');
+                    loginForm.reset();
+                }
+            });
+        }
+        
+        // 初始化库存系统
+        function initInventorySystem() {
+            populateCategorySelect();
+            renderProducts();
+            updateStats();
+            renderWithdrawals();
+            
+            // 添加商品按钮事件
+            document.getElementById('add-btn').addEventListener('click', addProduct);
+            
+            // 退出按钮事件
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('currentUser');
+                
+                // 显示加载动画
+                loginCard.innerHTML = `
+                    <div style="text-align:center; padding:50px;">
+                        <div style="margin:auto; width:40px;height:40px;border-radius:50%;border:3px solid #3498db;border-top-color:transparent;animation:spin 1s linear infinite;"></div>
+                        <p style="margin-top:20px;color:#2c3e50;">退出中...</p>
+                        <style>@keyframes spin {to{transform:rotate(360deg);}}</style>
+                    </div>
+                `;
+                
+                // 延迟重置为初始登录界面
+                setTimeout(() => {
+                    loginCard.innerHTML = `
+                        <div class="login-logo">🛒</div>
+                        <h2 class="login-title">商品管理系统</h2>
+                        <div class="login-subtitle">请输入您的账号信息登录系统</div>
+                        
+                        <form id="login-form">
+                            <div class="form-group">
+                                <label for="username">用户名</label>
+                                <input type="text" id="username" placeholder="输入用户名" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="password">密码</label>
+                                <input type="password" id="password" placeholder="输入密码" required>
+                            </div>
+                            
+                            <button type="submit" id="login-btn" class="btn-block">登录系统</button>
+                        </form>
+                        
+                        <div class="notification" id="login-notification"></div>
+                    `;
+                    
+                    // 重新绑定登录表单事件
+                    initLoginScreen();
+                    
+                    // 隐藏主应用，显示登录界面
+                    appContainer.classList.add('hidden');
+                    loginContainer.classList.remove('hidden');
+                }, 1500);
+            });
+            
+            // 标签页切换
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+                });
+            });
+            
+            // 模态框关闭按钮
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+                });
+            });
+            
+            // 修改库存提交
+            document.getElementById('update-submit').addEventListener('click', updateProductStock);
+            
+            // 调出商品提交
+            document.getElementById('withdraw-submit').addEventListener('click', withdrawProduct);
+            
+            // 点击模态框外部关闭
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+        }
+        
+        // 显示登录通知
+        function showLoginNotification(message, type = '') {
+            loginNotification.textContent = message;
+            loginNotification.className = `notification ${type}`;
+            loginNotification.style.display = 'block';
+            
+            setTimeout(() => {
+                loginNotification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 填充类别选择器
+        function populateCategorySelect() {
+            const categorySelect = document.getElementById('category');
+            categorySelect.innerHTML = '<option value="">选择类别</option>';
+            
+            for (const [categoryKey, categoryData] of Object.entries(categories)) {
+                // 添加主类别选项
+                const optGroup = document.createElement('optgroup');
+                optGroup.label = categoryData.name;
+                
+                // 添加子类别选项
+                for (const [subKey, subName] of Object.entries(categoryData.subcategories)) {
+                    const option = document.createElement('option');
+                    option.value = `${categoryKey}|${subKey}`;
+                    option.textContent = `${categoryData.name} - ${subName}`;
+                    optGroup.appendChild(option);
+                }
+                
+                // 如果主类别没有子类别，添加主类别自身作为选项
+                if (Object.keys(categoryData.subcategories).length === 0) {
+                    const option = document.createElement('option');
+                    option.value = categoryKey;
+                    option.textContent = categoryData.name;
+                    optGroup.appendChild(option);
+                }
+                
+                categorySelect.appendChild(optGroup);
+            }
+        }
+        
+        // 添加商品
+        function addProduct() {
+            const name = document.getElementById('name').value.trim();
+            const price = parseFloat(document.getElementById('price').value);
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const category = document.getElementById('category').value;
+            const description = document.getElementById('description').value.trim();
+            
+            // 验证输入
+            if (!name) {
+                showNotification('请输入商品名称', 'error');
+                return;
+            }
+            
+            if (isNaN(price) || price <= 0) {
+                showNotification('请输入有效的价格', 'error');
+                return;
+            }
+            
+            if (isNaN(quantity) || quantity < 0) {
+                showNotification('请输入有效的库存数量', 'error');
+                return;
+            }
+            
+            if (!category) {
+                showNotification('请选择商品类别', 'error');
+                return;
+            }
+            
+            // 创建新商品对象
+            const newProduct = {
+                id: Date.now(), // 使用时间戳作为ID
+                name,
+                price,
+                quantity,
+                category,
+                description,
+                createdAt: new Date().toISOString()
+            };
+            
+            // 添加到商品数组
+            products.push(newProduct);
+            
+            // 保存到localStorage
+            saveProducts();
+            
+            // 重新渲染商品列表
+            renderProducts();
+            updateStats();
+            
+            // 显示通知
+            showNotification('商品添加成功！');
+            
+            // 重置表单
+            document.getElementById('name').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('description').value = '';
+        }
+        
+        // 删除商品函数
+        function deleteProduct(id) {
+            if (confirm('确定要删除这个商品吗？此操作不可撤销。')) {
+                products = products.filter(product => product.id !== id);
+                saveProducts();
+                renderProducts();
+                updateStats();
+                showNotification('商品已删除', 'error');
+            }
+        }
+        
+        // 保存商品到localStorage
+        function saveProducts() {
+            localStorage.setItem('products', JSON.stringify(products));
+        }
+        
+        // 保存调出记录到localStorage
+        function saveWithdrawals() {
+            localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
+        }
+        
+        // 渲染商品列表
+        function renderProducts() {
+            const productsContainer = document.getElementById('products-container');
+            
+            if (products.length === 0) {
+                productsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <h3>暂无商品数据</h3>
+                        <p>请添加您的第一个商品</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 按添加时间倒序排列
+            const sortedProducts = [...products].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            productsContainer.innerHTML = sortedProducts.map(product => {
+                const categoryInfo = getCategoryInfo(product.category);
+                return `
+                <div class="product-card">
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">¥${product.price.toFixed(2)}</div>
+                        <div class="product-meta">
+                            <span>库存: <strong>${product.quantity}</strong></span>
+                            <span>类别: ${categoryInfo}</span>
+                            <span>添加时间: ${formatDate(product.createdAt)}</span>
+                        </div>
+                        ${product.description ? `<div class="product-description">${product.description}</div>` : ''}
+                    </div>
+                    <div class="product-actions">
+                        <button class="update-btn" onclick="openUpdateModal(${product.id})">修改库存</button>
+                        <button class="withdraw-btn" onclick="openWithdrawModal(${product.id})">调出</button>
+                        <button class="delete-btn" onclick="deleteProduct(${product.id})">删除</button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+        
+        // 渲染调出记录
+        function renderWithdrawals() {
+            const withdrawalsBody = document.getElementById('withdrawals-body');
+            const emptyWithdrawals = document.getElementById('empty-withdrawals');
+            
+            if (withdrawals.length === 0) {
+                emptyWithdrawals.style.display = 'block';
+                withdrawalsBody.innerHTML = '';
+                return;
+            }
+            
+            emptyWithdrawals.style.display = 'none';
+            
+            // 按时间倒序排列
+            const sortedWithdrawals = [...withdrawals].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            withdrawalsBody.innerHTML = sortedWithdrawals.map(withdrawal => {
+                return `
+                <tr>
+                    <td>${formatDateTime(withdrawal.date)}</td>
+                    <td>${withdrawal.productName}</td>
+                    <td>${withdrawal.quantity}</td>
+                    <td>${withdrawal.reason}</td>
+                    <td>${withdrawal.operator}</td>
+                </tr>
+                `;
+            }).join('');
+        }
+        
+        // 获取类别信息
+        function getCategoryInfo(categoryValue) {
+            if (categoryValue.includes('|')) {
+                const [categoryKey, subKey] = categoryValue.split('|');
+                if (categories[categoryKey] && categories[categoryKey].subcategories[subKey]) {
+                    return `${categories[categoryKey].name} - ${categories[categoryKey].subcategories[subKey]}`;
+                }
+            } else if (categories[categoryValue]) {
+                return categories[categoryValue].name;
+            }
+            return '其他';
+        }
+        
+        // 更新统计信息
+        function updateStats() {
+            const totalProductsEl = document.getElementById('total-products');
+            const totalValueEl = document.getElementById('total-value');
+            const totalStockEl = document.getElementById('total-stock');
+            
+            totalProductsEl.textContent = products.length;
+            
+            const totalValue = products.reduce((sum, product) => 
+                sum + (product.price * product.quantity), 0);
+            totalValueEl.textContent = `¥${totalValue.toFixed(2)}`;
+            
+            const totalStock = products.reduce((sum, product) => 
+                sum + product.quantity, 0);
+            totalStockEl.textContent = totalStock;
+        }
+        
+        // 显示通知
+        function showNotification(message, type = '') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+        }
+        
+        // 格式化日期时间
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return `${formatDate(dateString)} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+        }
+        
+        // 打开修改库存模态框
+        function openUpdateModal(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            
+            currentProduct = product;
+            document.getElementById('update-name').value = product.name;
+            document.getElementById('update-quantity').value = product.quantity;
+            document.getElementById('update-reason').value = '';
+            
+            document.getElementById('update-modal').style.display = 'flex';
+        }
+        
+        // 修改库存
+        function updateProductStock() {
+            const newQuantity = parseInt(document.getElementById('update-quantity').value);
+            const reason = document.getElementById('update-reason').value.trim() || '库存调整';
+            
+            if (isNaN(newQuantity)) {
+                showNotification('请输入有效的库存数量', 'error');
+                return;
+            }
+            
+            if (newQuantity < 0) {
+                showNotification('库存数量不能小于0', 'error');
+                return;
+            }
+            
+            const productIndex = products.findIndex(p => p.id === currentProduct.id);
+            if (productIndex === -1) return;
+            
+            const oldQuantity = products[productIndex].quantity;
+            products[productIndex].quantity = newQuantity;
+            saveProducts();
+            
+            // 记录库存调整
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            withdrawals.push({
+                id: Date.now(),
+                productId: currentProduct.id,
+                productName: currentProduct.name,
+                quantity: oldQuantity - newQuantity,
+                reason: reason,
+                date: new Date().toISOString(),
+                operator: user ? user.name : '未知'
+            });
+            saveWithdrawals();
+            
+            // 更新界面
+            renderProducts();
+            updateStats();
+            renderWithdrawals();
+            
+            document.getElementById('update-modal').style.display = 'none';
+            showNotification(`库存已更新为 ${newQuantity}`);
+        }
+        
+        // 打开调出商品模态框
+        function openWithdrawModal(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            
+            currentProduct = product;
+            document.getElementById('withdraw-name').value = product.name;
+            document.getElementById('withdraw-quantity').value = 1;
+            document.getElementById('withdraw-quantity').max = product.quantity;
+            document.getElementById('withdraw-reason').value = '销售';
+            document.getElementById('withdraw-notes').value = '';
+            
+            document.getElementById('withdraw-modal').style.display = 'flex';
+        }
+        
+        // 调出商品
+        function withdrawProduct() {
+            const quantity = parseInt(document.getElementById('withdraw-quantity').value);
+            const reason = document.getElementById('withdraw-reason').value;
+            const notes = document.getElementById('withdraw-notes').value.trim() || '';
+            
+            if (isNaN(quantity)) {
+                showNotification('请输入有效的调出数量', 'error');
+                return;
+            }
+            
+            if (quantity <= 0) {
+                showNotification('调出数量必须大于0', 'error');
+                return;
+            }
+            
+            const productIndex = products.findIndex(p => p.id === currentProduct.id);
+            if (productIndex === -1) return;
+            
+            if (quantity > products[productIndex].quantity) {
+                showNotification(`调出数量不能超过库存量 (${products[productIndex].quantity})`, 'error');
+                return;
+            }
+            
+            // 更新库存
+            products[productIndex].quantity -= quantity;
+            saveProducts();
+            
+            // 记录调出操作
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            withdrawals.push({
+                id: Date.now(),
+                productId: currentProduct.id,
+                productName: currentProduct.name,
+                quantity: quantity,
+                reason: reason,
+                notes: notes,
+                date: new Date().toISOString(),
+                operator: user ? user.name : '未知'
+            });
+            saveWithdrawals();
+            
+            // 更新界面
+            renderProducts();
+            updateStats();
+            renderWithdrawals();
+            
+            document.getElementById('withdraw-modal').style.display = 'none';
+            showNotification(`已调出 ${quantity} 件商品`);
+        }
+        
+        // 全局函数声明
+        window.deleteProduct = deleteProduct;
+        window.openUpdateModal = openUpdateModal;
+        window.openWithdrawModal = openWithdrawModal;
+    </script>
+</body>
+</html>
